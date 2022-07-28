@@ -1,0 +1,78 @@
+source colors
+
+source accounts/$EMAIL
+
+set sidebar_visible = yes
+set sidebar_width = 26
+set sidebar_short_path = yes
+set sidebar_delim_chars = "/"
+set sidebar_folder_indent
+set sidebar_indent_string="  \\_ "
+set sidebar_next_new_wrap = yes
+set mail_check_stats
+set sidebar_format = "%D%?F? [%F]?%* %?N?%N/? %?S?%S?"
+set index_format="%4C %Z %X %{%b %d %H:%M} %-20.20L %?M? (#%03M)&(%4c)? %?y?(%.20Y) ?%s"
+bind index,pager \Ck sidebar-prev
+bind index,pager \Cj sidebar-next
+bind index,pager \Co sidebar-open
+bind index,pager \Cp sidebar-prev-new
+bind index,pager \Cn sidebar-next-new
+bind index,pager B sidebar-toggle-visible
+
+set header_cache = ~/.config/mutt/cache/headers
+set message_cachedir = ~/.config/mutt/cache/bodies
+
+set mailcap_path = ~/.config/mutt/mailcap
+set mime_type_query_command = "file --mime-type -b %s"
+set sleep_time = 0 # don't pause for informational messages
+set wait_key = no # disable "press key to continue"
+set mark_old = no # unread mail stays unread until read
+set fast_reply # skip to compose on reply
+set fcc_attach # save attachments with the body
+set mime_forward=yes # forward attachments too
+set sort = "reverse-date" # order by newest email first
+set forward_format = "Fwd: %s" # format of subject when forwarding
+set forward_quote # include message in forward
+set include # include message in replies
+
+auto_view text/html # automatically show html emails
+auto_view application/pgp-encrypted
+alternative_order text/plain text/enriched text/html
+
+bind index,pager g noop
+bind index \Cf noop
+
+# bindings
+macro index $ "<shell-escape>~/.scripts/mailsync<enter>" "Synchronise mail with server"
+bind index j next-entry
+bind index k previous-entry
+bind attach <return> view-mailcap
+bind attach l view-mailcap
+bind editor <space> noop
+bind index G last-entry
+bind index gg first-entry
+bind pager,attach h exit
+bind pager j next-line
+bind pager k previous-line
+bind pager l view-attachments
+bind index d delete-message
+bind index u undelete-message
+bind index L limit
+bind index h noop
+bind index l display-message
+bind index,query <space> tag-entry
+macro browser h "<change-dir><kill-line>..<enter>" "Go to parent folder"
+bind index,pager H view-raw-message
+bind browser l select-entry
+bind pager,browser gg top-page
+bind pager,browser G bottom-page
+bind index,pager S sync-mailbox
+bind index,pager R group-reply
+bind editor <Tab> complete-query
+
+# mouse wheel bindings
+bind index \031 previous-undeleted
+bind index \005 next-undeleted
+bind pager \031 previous-line
+bind pager \005 next-line
+
