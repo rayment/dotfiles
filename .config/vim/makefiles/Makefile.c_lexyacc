@@ -1,3 +1,6 @@
+# edit this to change the file location for `make install' and `make uninstall'
+PREFIX=/usr/local
+
 export DEBUG?=0
 VERSION:=1.0.0
 BINARY:=a.out
@@ -5,20 +8,34 @@ BINARY:=a.out
 LIBRARIES:=
 
 export CC:=cc
-export CPP:=c++
+export CPP:=cc
 export LD:=$(CC)
+export LEX:=lex
+export YACC:=yacc
 
-CCFLAGS:=--std=c89
+CCFLAGS:=--std=c99
 CPPFLAGS:=--std=c++98
 CXXFLAGS:=-Wall -Wextra -Wpedantic -Werror --pedantic-errors \
-          -DVERSION=\"${VERSION}\"
+          -DVERSION=\"${VERSION}\" -D_POSIX_C_SOURCE=2 \
+		  -Wno-unused-function
+LEXFLAGS:=
+YACCFLAGS:=-d
 LDFLAGS:=
 
 ifeq ($(DEBUG),1)
-CXXFLAGS+=-ggdb -DDEBUG=1
+CXXFLAGS+=-ggdb -DDEBUG=1 -DYYDEBUG=1
+YACCFLAGS+=-v -Wcounterexamples
 else
 CXXFLAGS+=-O3 -DNDEBUG
 endif
+
+LEXSOURCES:=$(wildcard src/*.l) $(wildcard src/*/*.l)
+YACCSOURCES:=$(wildcard src/*.y) $(wildcard src/*/*.y)
+LEXGENS:=$(patsubst src/%.l,src/%.yy.c,$(LEXSOURCES))
+YACCGENS:=$(patsubst src/%.y,src/%.tab.c,$(YACCSOURCES))
+YACCHDRGENS:=$(patsubst src/%.y,include/%.tab.h,$(YACCSOURCES))
+LEXOBJ:=$(patsubst src/%,obj/%,$(patsubst %.c,%.o,$(LEXGENS)))
+YACCOBJ:=$(patsubst src/%,obj/%,$(patsubst %.c,%.o,$(YACCGENS)))
 
 CSOURCES:=$(wildcard src/*.c) $(wildcard src/*/*.c)
 CPPSOURCES:=$(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
@@ -62,6 +79,8 @@ endif
 export CCFLAGS
 export CPPFLAGS
 export CXXFLAGS
+export LEXFLAGS
+export YACCFLAGS
 export LDFLAGS
 export LIBLIBS
 export LIBFLAGS
@@ -69,12 +88,18 @@ export LIBFLAGS
 DISTFILES:=COPYING README Makefile
 DISTDIRS:=src include
 
-all: $(COBJECTS) $(CPPOBJECTS)
+all: $(LEXGENS) $(YACCGENS) $(LEXOBJ) $(YACCOBJ) $(COBJECTS) $(CPPOBJECTS)
 	mkdir -p build
-	$(LD) $(COBJECTS) $(CPPOBJECTS) $(LDFLAGS) $(LIBLIBS) -o build/$(BINARY)
-	if [ "$(DEBUG)" = 0 ]; then \
-		strip build/$(BINARY); \
-	fi
+	$(LD) $(COBJECTS) $(CPPOBJECTS) $(LEXOBJ) $(YACCOBJ) \
+	      $(LDFLAGS) $(LIBLIBS) -o build/$(BINARY)
+
+src/%.yy.c: src/%.l
+	$(LEX) -t $(LEXFLAGS) $< > $@
+
+src/%.tab.c: src/%.y
+	$(YACC) $(YACCFLAGS) $< -o $@
+	mkdir -p include/$(shell dirname "$*")
+	mv src/$*.tab.h include/$*.tab.h
 
 obj/%.o: src/%.c
 	mkdir -p $(shell dirname $@)
@@ -91,8 +116,15 @@ dist:
 	tar -cJf $(BINARY)-$(VERSION).tar.xz $(BINARY)-$(VERSION)
 	rm -rf $(BINARY)-$(VERSION)
 
-clean:
-	rm -rf build obj
+install:
+	install -d $(PREFIX)/bin
+	install -m 755 build/$(BINARY) $(PREFIX)/bin/$(BINARY)
 
-.PHONY: all dist clean
+uninstall:
+	rm $(PREFIX)/bin/$(BINARY)
+
+clean:
+	rm -rf build obj $(LEXGENS) $(YACCGENS) $(YACCHDRGENS)
+
+.PHONY: all lex yacc dist install uninstall clean
 
