@@ -1,0 +1,88 @@
+! X11 related configuration
+Xcursor.theme: Simp1e
+Xcursor.size: 32
+dwm.gappx: 1
+dunst.theme: default
+
+! other metadata configuration
+st.termname: st-256color
+
+! system font configuration
+dwm.font: GohuFont:style=Bold
+dmenu.font: GohuFont:pixelsize=14
+st.font: GohuFont:pixelsize=14:antialias=false:autohint=true:style=Medium
+!st.font: GohuFont:pixelsize=14:antialias=false:autohint=true:style=Bold
+dunst.font: GohuFont Regular 11
+
+! st configuration
+! ----------------
+! 8 normal colors
+! black
+st.color0: #000000
+! red
+st.color1: #800000
+! green
+st.color2: #008000
+! yellow
+st.color3: #808000
+! blue
+st.color4: #000080
+! magenta
+st.color5: #800080
+! cyan
+st.color6: #008080
+! white
+st.color7: #c0c0c0
+!
+! 8 bright colors
+! black
+st.color8: #808080
+! red
+st.color9: #ff0000
+! green
+st.color10: #00ff00
+! yellow
+st.color11: #ffff00
+! blue
+st.color12: #0000ff
+! magenta
+st.color13: #ff00ff
+! cyan
+st.color14: #00ffff
+! white
+st.color15: #ffffff
+! default colors
+!st.background: #202020
+st.background: #000000
+st.foreground: #ffffff
+!st.background: #a0a0a0
+!st.foreground: #000000
+st.cursorColor: #808080
+
+! dmenu configuration
+! -------------------
+dmenu.normbgcolor: #c0c0c0
+dmenu.normfgcolor: #000000
+dmenu.normhighlightcolor: #ff0000
+dmenu.selbgcolor: #0000ff
+dmenu.selfgcolor: #ffffff
+dmenu.selhighlightcolor: #ff0000
+
+! dwm configuration
+! -----------------
+dwm.normbgcolor: #c0c0c0
+dwm.normfgcolor: #000000
+dwm.normbordercolor: #808080
+dwm.selbgcolor: #0000ff
+dwm.selfgcolor: #ffffff
+dwm.selbordercolor: #ffff00
+
+! dunst configuration
+! -------------------
+dunst.background: #c0c0c0
+dunst.foreground: #000000
+dunst.frame: #808080
+dunst.framelow: #00ff00
+dunst.framehigh: #ff0000
+dunst.progressbar: #ffffff
+
