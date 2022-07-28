@@ -1,0 +1,65 @@
+#             _      _        _
+#  ___ __  __| |__  | | __ __| | _ __  ___
+# / __|\ \/ /| '_ \ | |/ // _` || '__|/ __|
+# \__ \ >  < | | | ||   <| (_| || |  | (__
+# |___//_/\_\|_| |_||_|\_\\__,_||_|   \___|
+#
+
+# F1  - XF86AudioMute
+# F2  - XF86AudioLowerVolume
+# F3  - XF86AudioRaiseVolume
+# F4  - XF86AudioMicMute
+# F5  - XF86MonBrightnessDown
+# F6  - XF86MonBrightnessUp
+# F7  - XF86Display
+# F8  - XF86WLAN
+# F9  - unknown message button
+# F10 - unknown accept call button
+# F11 - unknown decline call button
+# F12 - XF86Favourites
+
+XF86AudioLowerVolume
+	amixer set Master 2%- && dwmbar
+
+XF86AudioRaiseVolume
+	amixer set Master 2%+ && dwmbar
+
+XF86AudioMute
+	amixer set Master toggle && dwmbar
+
+XF86Audio{Play,Prev,Next,Stop}
+	sleep 0.1 && songinfo
+
+XF86ScreenSaver
+	lock
+
+# F8
+XF86WLAN
+	sleep 0.1 && wlanblockinfo
+
+XF86TouchpadToggle
+	tptoggle
+
+# Sleep key on external keyboards
+XF86Display
+	s2ram && lock
+
+# Screenshot
+Print
+	screenshot
+
+alt + Up
+	mpc toggle && sleep 0.1 && dwmbar
+
+alt + Down
+	mpc stop && sleep 0.1 && dwmbar
+
+alt + Left
+	mpc prev && sleep 0.1 && dwmbar
+
+alt + Right
+	mpc next && sleep 0.1 && dwmbar
+
+mod4 + space
+	kbtoggle
+
