@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# show cpu temperature
+module_cputhermal() {
+	acpi -t | awk '/^Thermal 0:/ {print $4 "C"}'
+}
+
+# show ram usage
+module_rammem() {
+	free -h | awk '/^Mem:/ {print $3 "/" $2}'
+}
+
+while true;
+do
+	module_cputhermal > "$HOME/.config/status/cputemp"
+	module_rammem > "$HOME/.config/status/rammem"
+	dwmbar
+	sleep 5
+done
+

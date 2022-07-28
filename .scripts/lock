@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#xset dpms force off &
+
+# slock should auto blacken the screen after a few seconds
+slock
+

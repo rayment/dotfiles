@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# refresh the background with a random image
+
+feh --randomize --bg-fill --no-fehbg $HOME/Pictures/Backgrounds/*
+

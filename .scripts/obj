@@ -1,0 +1,40 @@
+#!/bin/sh
+
+#
+# simplified object dumper
+#
+# author       : Finn Rayment <finn@rayment.fr>
+# date created : 04/02/2021
+#
+
+# print help message
+help() {
+	echo "obj [syntax] <file>"
+	echo "syntax:"
+	echo "    gas           - AT&T/GNU syntax"
+	echo "    nasm          - Intel/NASM syntax"
+}
+
+gas() {
+	objdump -dS -Matt "$file"
+}
+
+nasm() {
+	objdump -dS -Mintel "$file"
+}
+
+if [[ -z "$2" ]];
+then
+	help
+	exit
+else
+	file="$2"
+fi
+
+# parse arguments
+case "$1" in
+	gas) gas ;;
+	nasm) nasm ;;
+	help|*) help  ;;
+esac
+

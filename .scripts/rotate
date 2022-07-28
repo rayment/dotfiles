@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# rotate display
+#
+# author       : Finn Rayment <finn@rayment.fr>
+# date created : 01/07/2022
+#
+
+# set this variable to the internal monitor id
+intern=eDP
+
+choice=$(printf "normal\\ninverted\\nleft\\nright" | dmenu -i -p "orientation:")
+case "$choice" in
+	normal) orientation="normal" ;;
+	inverted) orientation="inverted" ;;
+	left) orientation="left" ;;
+	right) orientation="right" ;;
+	*) echo "error: invalid orientation"; exit 1
+esac
+
+xrandr --output "$intern" --rotate "$orientation"
+# refresh the background because otherwise the tiling can break
+refbg
+

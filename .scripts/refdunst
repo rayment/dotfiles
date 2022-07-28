@@ -1,0 +1,49 @@
+#!/bin/sh
+
+# refresh or start dunst notifier
+
+icon="$HOME/.config/dunst/icons/settings.png"
+
+pid=$(pidof dunst)
+refresh=0
+
+if [ -n "$pid" ];
+then
+	kill $pid
+	refresh=1
+fi
+
+if [ -n "$1" ] && [ "$1" = "norefresh" ];
+then
+	refresh=0
+fi
+
+# substitute dunst theme template
+dunst_cfg="$HOME/.config/dunst/dunstrc"
+cp ~/.config/dunst/TEMPLATE_RC "$dunst_cfg"
+dunst_fg="$(xrdb -query -get dunst.foreground)"
+dunst_bg="$(xrdb -query -get dunst.background)"
+dunst_frame="$(xrdb -query -get dunst.frame)"
+dunst_frame_low="$(xrdb -query -get dunst.framelow)"
+dunst_frame_high="$(xrdb -query -get dunst.framehigh)"
+dunst_progressbar="$(xrdb -query -get dunst.progressbar)"
+dunst_font="$(xrdb -query -get dunst.font)"
+dunst_theme="$(xrdb -query -get dunst.theme)"
+sed -i "s/FRAME_COLOR_LOW/$dunst_frame_low/" "$dunst_cfg"
+sed -i "s/FRAME_COLOR_HIGH/$dunst_frame_high/" "$dunst_cfg"
+sed -i "s/FRAME_COLOR/$dunst_frame/" "$dunst_cfg"
+sed -i "s/BACKGROUND_COLOR/$dunst_bg/" "$dunst_cfg"
+sed -i "s/FOREGROUND_COLOR/$dunst_fg/" "$dunst_cfg"
+sed -i "s/PROGRESS_COLOR/$dunst_progressbar/" "$dunst_cfg"
+sed -i "s/FONT/$dunst_font/" "$dunst_cfg"
+
+rm "$HOME/.config/dunst/icons" || true
+ln -s "$HOME/.config/dunst/themes/$dunst_theme" "$HOME/.config/dunst/icons" || true
+
+nohup dunst -config ~/.config/dunst/dunstrc >/dev/null 2>&1 & disown
+
+if [ "$refresh" = 1 ];
+then
+	dunstify -r 10000012 -u normal -i "$icon" "dunst" "Notifier restarted"
+fi
+

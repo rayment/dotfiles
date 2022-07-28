@@ -1,0 +1,30 @@
+#!/bin/zsh
+
+# purge .DS_Store files and other crap
+rm -rf ._*
+rm -rf **/._*
+rm -rf **/**/._*
+rm -rf .DS_Store
+rm -rf **/.DS_Store
+rm -rf **/**/.DS_Store
+rm -rf __MACOSX
+rm -rf **/__MACOSX
+rm -rf **/**/__MACOSX
+rm -rf \~\$*
+rm -rf **/\~\$*
+rm -rf **/**/\~\$*
+rm -rf *.dSYM
+rm -rf **/*.dSYM
+rm -rf **/**/*.dSYM
+
+# non-macos but this crap tends to get dissipated
+rm -rf __pycache__
+rm -rf **/__pycache__
+rm -rf **/**/__pycache__
+rm -rf a.out
+rm -rf **/a.out
+rm -rf **/**/a.out
+rm -rf *.o
+rm -rf **/*.o
+rm -rf **/**/*.o
+

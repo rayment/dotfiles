@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# show notification containing current song information
+
+MUSIC_DIR="$HOME/Music"
+
+folder="$MUSIC_DIR/$(dirname "$(mpc current -f %file%)")"
+icon="$HOME/.config/dunst/icons/music.png"
+pause_icon="$HOME/.config/dunst/icons/pause.png"
+stop_icon="$HOME/.config/dunst/icons/stop.png"
+
+if [ -f "$folder/Cover.png" ];
+then
+	icon="$folder/Cover.png"
+fi
+
+if [ -f "$folder/Cover.jpg" ];
+then
+	icon="$folder/Cover.jpg"
+fi
+
+if [ ! -z "$(mpc status | grep -e "\[playing\]" -e "\[paused\]")" ];
+then
+	artist="$(mpc status -f "%artist%" | sed -n 1p)"
+	title="$(mpc status -f "%title%" | sed -n 1p)"
+	album="$(mpc status -f "%album%" | sed -n 1p)"
+	if [ ! -z "$(mpc status | grep "\[paused\]")" ];
+	then
+		dunstify -r 10000010 -u normal -i "$pause_icon" "$title" "$artist<br><i>$album</i>"
+	else
+		dunstify -r 10000010 -u normal -i "$icon" "$title" "$artist<br><i>$album</i>"
+	fi
+else
+	dunstify -r 10000010 -u normal -i "$stop_icon" "Music" "Stopped"
+fi
+

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# start viewing the webcam
+
+ffplay /dev/video0
+

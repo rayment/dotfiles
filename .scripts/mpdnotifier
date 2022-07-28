@@ -1,0 +1,26 @@
+#!/bin/sh
+
+#
+# mpdnotifier
+# auto notify when a song change is detected
+#
+# author       : Finn Rayment <finn@rayment.fr>
+# date created : 03/07/2022
+#
+
+# wait for X to start (hacky)
+sleep 3
+
+while true;
+do
+	mpc idle
+	if [ $? -eq 0 ];
+	then
+		songinfo
+		dwmbar
+	else
+		exit 1
+	fi
+done
+
+

@@ -1,0 +1,144 @@
+#!/bin/sh
+
+#
+# ffmpeg video and audio recorder
+#
+# author        : Finn Rayment <finn@rayment.fr>
+# date created  : 14/02/2020
+#
+
+tmp_file="/tmp/recordingpid"
+
+#video_options="-y -f x11grab -framerate 60 -s 1440x900 -i :0.0 -c:v libx264rgb"
+#audio_options="-f pulse -i 0 -r 30 -c:a flac"
+
+# display codec selection in dmenu
+ask_codec() {
+	choice=$(printf "x264/mkv\\nx264/mp4\\nx265/mkv\\nx265/mp4\\nflac/flac\\naac/wav\\nx264+flac/mkv\\nx264+aac/mkv\\nx264+aac/mp4\\nx265+flac/mkv\\nx265+aac/mkv\\nx265+aac/mp4" | dmenu -i -p "codecs and filetype:")
+	case "$choice" in
+		flac/flac)                       acodec="flac"  ext="flac" ;;
+		aac/wav)                         acodec="aac";  ext="wav"  ;;
+		x264/mkv)      vcodec="libx264";                ext="mkv"  ;;
+		x264/mp4)      vcodec="libx264";                ext="mp4"  ;;
+		x264+flac/mkv) vcodec="libx264"; acodec="flac"; ext="mkv"  ;;
+		x264+aac/mkv)  vcodec="libx264"; acodec="aac";  ext="mkv"  ;;
+		x264+aac/mp4)  vcodec="libx264"; acodec="aac";  ext="mp4"  ;;
+		x265/mkv)      vcodec="libx265";                ext="mkv"  ;;
+		x265/mp4)      vcodec="libx265";                ext="mp4"  ;;
+		x265+flac/mkv) vcodec="libx265"; acodec="flac"; ext="mkv"  ;;
+		x265+aac/mkv)  vcodec="libx265"; acodec="aac";  ext="mkv"  ;;
+		x265+aac/mp4)  vcodec="libx265"; acodec="aac";  ext="mp4"  ;;
+		*) echo "error: invalid codec mode"; exit 1
+	esac
+	if [ -n "${acodec}" ];
+	then
+		acodec="-c:a $acodec"
+	else
+		acodec="-an"
+	fi
+	if [ -n "${vcodec}" ];
+	then
+		vcodec="-c:v $vcodec"
+	else
+		vcodec="-vn"
+	fi
+}
+
+# display compression selection in dmenu
+ask_compression() {
+	choice=$(printf "none/crf=0\\nmedium/crf=18\\nhigh/crf=24\\nhigh/crf=24+fps=30" | dmenu -i -p "compression:")
+	fps=0
+	crf=0
+	case "$choice" in
+		none/crf=0) ;;
+		medium/crf=18) crf=18; ;;
+		high/crf=24) crf=24; ;;
+		high/crf=24+fps=30) crf=24; fps=30 ;;
+		*) echo "error: invalid compression mode"; exit 1
+	esac
+}
+
+# start a new recording
+start() {
+	if [ -f "$tmp_file" ];
+	then
+		echo "error: recording already in progress"
+		exit
+	fi
+	video="-f x11grab -framerate 60 -r 24 -s "$(xdpyinfo | grep dimensions | awk '{ print $2 }')" -i $DISPLAY"
+	audio="-f pulse -i 0"
+	ask_codec
+	filename="capture-$(date '+%y%m%d-%H%M%S').$ext"
+	echo "recording to '$filename'"
+	audiovideo=""
+	#if [ ! "$vcodec" = "-vn" ];
+	#then
+	#	audiovideo="$audiovideo $video"
+	#fi
+	#if [ ! "$acodec" = "-an" ];
+	#then
+	#	audiovideo="$audiovideo $audio"
+	#fi
+	#echo "Recording args:"
+	#echo "audiovideo: $audiovideo"
+	#echo "vcodec:     $vcodec"
+	#echo "acodec:     $acodec"
+	ffmpeg -y $video $audio $vcodec $acodec -crf 0 -preset ultrafast "$HOME/Videos/Recordings/$filename" &
+	touch "$HOME/.config/status/record"
+	dwmbar
+	echo $! > /tmp/recordingpid
+}
+
+# stop a recording
+stop() {
+	if [ ! -f "$tmp_file" ];
+	then
+		echo "error: no recording in progress"
+		exit 1
+	fi
+	recpid="$(cat $tmp_file)"
+	rm -f "$HOME/.config/status/record"
+	dwmbar
+	# kill with SIGTERM to allow safe exit
+	kill -15 "$recpid" || true
+	rm -f $tmp_file
+	# ffmpeg may still run after SIGTERM so now SIGKILL
+	sleep 3
+	kill -9 "$recpid" 2>/dev/null
+}
+
+# encode video and audio
+encode() {
+	if [ "$#" -lt 1 ];
+	then
+		echo "error: no input file specified"
+		exit 1
+	fi
+	ask_codec
+	ask_compression
+	filename="$1"
+	outfilename="${filename%.*}-encoded.$ext"
+	if [ "$fps" -ne 0 ];
+	then
+		fps="-r $fps"
+	fi
+	ffmpeg -i "$filename" $vcodec $acodec $fps -crf $crf "$outfilename"
+}
+
+# print help message
+help() {
+	echo "record [option]"
+	echo "    help          - show this message"
+	echo "    start         - start recording"
+	echo "    stop          - stop recording"
+	echo "    encode <file> - encode recordings"
+}
+
+# parse arguments
+case "$1" in
+	start)	start ;;
+	stop)	stop  ;;
+	encode) encode $2 ;;
+	help|*) help  ;;
+esac
+

@@ -1,0 +1,16 @@
+#!/bin/sh
+
+icon_on="$HOME/.config/dunst/icons/mic-on.png"
+icon_off="$HOME/.config/dunst/icons/mic-off.png"
+
+amixer set Capture toggle
+
+state="$(amixer get Capture | tail -n1 | awk '{print $(NF)}')"
+
+if [ "$state" = "[on]" ];
+then
+	dunstify -r 10000002 -u normal -i "$icon_on" "Microphone" "Enabled"
+else
+	dunstify -r 10000002 -u normal -i "$icon_off" "Microphone" "Disabled"
+fi
+

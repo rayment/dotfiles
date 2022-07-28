@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# jmv
+# Move files in and out of jail.
+#
+
+filepath=$(realpath "$1")
+rootdir=$(echo "$filepath" | cut -d "/" -f2)
+if [ "$rootdir" == "jail" ];
+then
+	mv "$filepath" "/$(echo "$filepath" | cut -d "/" -f3-)"
+else
+	mv "$(pwd)/$1" "/jail/$(pwd)/$1"
+fi
+

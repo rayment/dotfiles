@@ -1,0 +1,112 @@
+#!/bin/sh
+
+# display system information in dwm status bar
+
+battery_icon="$HOME/.config/dunst/icons/battery.png"
+
+# module separator
+delim="|"
+
+# name and hostname
+module_hostname() {
+	echo "$(whoami)@$(hostname)"
+}
+
+# available updates
+#module_updates() {
+#	pacman -Qu | grep -v "\[ignored\]" | wc -l | sed -e "s/^0$//g"
+#}
+
+# audio volume level and record indicator
+module_media() {
+	volume="$(amixer get Master | grep -o "[0-9]*%" | tail -n1)"
+	echo "SND $(amixer get Master | tail -n1 | awk '{ print $6 }' | sed "s/\[off\]/MUT/;s/\[on\]/$volume/;")"
+	if [ -f "$HOME/.config/status/record" ]; then
+		echo "[REC]"
+	fi
+}
+
+# battery info
+module_battery() {
+	if [ "$(cat /sys/class/power_supply/AC/online)" = 1 ];
+	then
+		echo "AC"
+	fi
+	batteries="$(ls /sys/class/power_supply | grep BAT | wc -l)"
+	if [ $batteries -gt 0 ];
+	then
+		echo "BAT"
+		for x in /sys/class/power_supply/BAT?/capacity;
+		do
+			lvl=$(cat $x)
+			echo "$lvl%"
+			if [ "$lvl" -le 10 ] && [ ! "$(cat /sys/class/power_supply/AC/online)" = 1 ];
+			then
+				dunstify -r 10000011 -u critical -i "$battery_icon" "Battery warning" "Battery level is at $lvl%"
+			fi
+		done
+	fi
+}
+
+# date and time
+module_time() {
+	date "+%b %d (%a) %Y %H:%M"
+}
+
+# call top modules and draw the status bar
+run_top() {
+	module_hostname
+	echo "$delim"
+	module_media
+	echo "$delim"
+	module_battery
+	echo "$delim"
+	module_time
+}
+
+module_music() {
+	if [ ! -z "$(mpc status | grep -e "\[playing\]" -e "\[paused\] ")" ];
+	then
+		if [ ! -z "$(mpc status | grep -e "\[playing\]")" ];
+		then
+			state="[PLAYING]"
+		else
+			state="[PAUSED]"
+		fi
+		artist="$(mpc status -f "%artist%" | sed -n 1p)"
+		title="$(mpc status -f "%title%" | sed -n 1p)"
+		album="$(mpc status -f "%album%" | sed -n 1p)"
+		echo "$state $artist - $title ($album)"
+	fi
+}
+
+run_music() {
+	module_music | awk -v len=120 '{ if (length($0) > len) print substr($0, 1, len-3) "..."; else print; }'
+}
+
+# call bottom modules and draw the status bar
+run_bottom() {
+	lang=$(cat "$HOME/.config/x/kbid")
+	echo "[$lang]"
+	echo "$delim"
+	echo "CPU"
+	cat "$HOME/.config/status/cputemp"
+	cat "$HOME/.config/status/cpumem"
+	echo "$delim"
+	echo "MEM"
+	cat "$HOME/.config/status/rammem"
+	internet="$(cat "$HOME/.config/status/internet")"
+	wan="$(cat "$HOME/.config/status/wan")"
+	if [ -n "${internet}" ];
+	then
+		echo "$delim"
+		echo $internet
+	fi
+	if [ -n "${wan}" ];
+	then
+		echo "WAN $wan"
+	fi
+}
+
+xsetroot -name " $(run_top | tr '\n' ' '); $(run_music);$(run_bottom | tr '\n' ' ')"
+

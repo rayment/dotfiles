@@ -1,0 +1,11 @@
+#!/bin/bash
+
+firejail \
+	--noprofile \
+	--chroot=/jail \
+	--shell=/bin/zsh \
+	--private-dev \
+	$@
+	#--private-dev \
+	#--private-tmp \
+

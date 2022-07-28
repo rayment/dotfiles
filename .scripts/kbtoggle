@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# toggle keyboard layout
+
+icon="$HOME/.config/dunst/icons/keyboard.png"
+
+if [ "$(cat $HOME/.config/x/kbmap)" -eq 0 ];
+then
+	echo 1 > ~/.config/x/kbmap
+	echo "FR" > ~/.config/x/kbid
+	setxkbmap -layout ca
+	dunstify -r 10000003 -u normal -i "$icon" "Keyboard layout" "Français<br><i>QWERTY</i>"
+elif [ "$(cat $HOME/.config/x/kbmap)" -eq 1 ];
+then
+	echo 2 > ~/.config/x/kbmap
+	echo "EL" > ~/.config/x/kbid
+	setxkbmap -layout gr -variant 'polytonic' -option 'grp:alt_shift_toggle'
+	dunstify -r 10000003 -u normal -i "$icon" "Keyboard layout" "Greek<br><i>Polytonic</i>"
+else
+	echo 0 > ~/.config/x/kbmap
+	echo "EN" > ~/.config/x/kbid
+	setxkbmap -layout us
+	dunstify -r 10000003 -u normal -i "$icon" "Keyboard layout" "English<br><i>QWERTY</i>"
+fi
+
+dwmbar
+

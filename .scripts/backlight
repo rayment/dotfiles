@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# backlight controller
+
+icon="$HOME/.config/dunst/icons/brightness.png"
+
+case "$1" in
+	up)
+		light -A 5
+		;;
+	down)
+		light -U 5
+		;;
+	*) ;;
+esac
+
+light_val=$(light -G | cut -d. -f1)
+dunstify -r 10000004 -u normal -i "$icon" "Backlight" "Value: $light_val" -h "int:value:$light_val"
+

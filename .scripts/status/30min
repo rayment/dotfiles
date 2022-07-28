@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# show WAN ip
+module_wan() {
+	ip=$(curl -4 https://icanhazip.com)
+	if [ "$?" = 0 ];
+	then
+		echo "$ip"
+	else
+		echo ""
+	fi
+}
+
+while true;
+do
+	module_wan > "$HOME/.config/status/wan"
+	dwmbar
+	sleep 1800
+done
+

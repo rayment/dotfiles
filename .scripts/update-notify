@@ -1,0 +1,47 @@
+#!/bin/sh
+
+#
+# portage update notifier
+#
+# author        : Finn Rayment <finn@rayment.fr>
+# date created  : 02/07/2022
+#
+
+icon="$HOME/.config/dunst/icons/gentoo.png"
+
+# display the updates to the logged in user
+export DISPLAY=:0
+export XUSER=$(ps -eo uname,args --sort start_time | grep startx | awk '{print $1}' | head -n1)
+
+# sync for new updates
+emerge --sync || exit 1
+
+if [ -n "$XUSER" ];
+then
+	HOME_DIR=$(eval echo ~$XUSER)
+	export XAUTHORITY=$HOME_DIR/.config/x/xauthority
+
+	sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon" "portage" "Finished scheduled sync."
+
+	# do a pretend emerge and grep the total changes
+	BUILDS=$(eval emerge -uDNpv --with-bdeps=y @world | grep "Total" | head -n1 | awk '{ print $2 }')
+	REMOVALS=$(eval emerge -cpv | grep "Number to remove" | tail -n1 | awk '{print $NF}')
+
+	if [ ! "$BUILDS" = 0 ];
+	then
+		if [ ! "$REMOVALS" = 0 ];
+		then
+			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon" "portage" "<b>$BUILDS</b> package(s) are waiting to be emerged.\n<b>$REMOVALS</b> package(s) are slated for removal."
+		else
+			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon" "portage" "<b>$BUILDS</b> package(s) are waiting to be emerged."
+		fi
+	else
+		if [ ! "$REMOVALS" = 0 ];
+		then
+			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon" "portage" "<b>$REMOVALS</b> package(s) are slated for removal."
+		else
+			sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon" "portage" "Nothing to update or remove."
+		fi
+	fi
+fi
+

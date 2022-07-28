@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# show connections and addresses
+module_internet() {
+	eth="$(sed "s/down//;s/up/ETH/" /sys/class/net/e*/operstate)"
+	if [ -n "${eth}" ];
+	then
+		echo "$eth"
+	fi
+	wifi="$(grep "^\s*w" /proc/net/wireless | awk '{ print "WIFI", int($3 * 100 / 70) "%" }')"
+	if [ -n "${wifi}" ];
+	then
+		echo "$wifi"
+	fi
+	if [ -n "${wifi}${eth}" ];
+	then
+		ip route get 1 | awk '{print $7;exit}'
+		#hostname -i | cut -d' ' -f1
+	else
+		echo "NET OFF"
+	fi
+}
+
+# show cpu usage
+module_cpumem() {
+	mpstat 2 1 | grep -A 5 "%idle" | tail -n 1 | awk -F " " '{print 100-$12"%"}'
+	#mpstat -P 0-15 2 1 | tail -16 | awk '{printf 100-$NF"% "}' | xargs
+}
+
+while true;
+do
+	module_internet > "$HOME/.config/status/internet"
+	module_cpumem > "$HOME/.config/status/cpumem"
+	dwmbar
+	sleep 30
+done
+

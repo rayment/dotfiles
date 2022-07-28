@@ -1,0 +1,4 @@
+#!/bin/sh
+
+pidof dwm | xargs kill -s USR1
+

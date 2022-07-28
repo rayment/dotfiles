@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# take a screenshot
+
+icon="$HOME/.config/dunst/icons/camera.png"
+
+SCR_DIR="$HOME/Pictures/Screenshots"
+SCR_NAME="screenshot-$(date '+%Y%m%d-%H%M%S').png"
+
+scrot -pz "$SCR_DIR/$SCR_NAME"
+dunstify -r 10000005 -u normal -i "$icon" "Screenshot captured" "$SCR_NAME"

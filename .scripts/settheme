@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# set the ui theme
+
+#if [ -z "$1" ];
+#then
+#	echo "Usage: settheme <theme>"
+#	exit 1
+#fi
+
+theme="$1"
+icon="$HOME/.config/dunst/icons/theme.png"
+
+if [ -n "$theme" ] && [ ! -f "$THEMES/$theme" ];
+then
+	echo "Theme '$theme' doesn't exist."
+	exit 1
+elif [ -z "$theme" ];
+then
+	theme=$(ls "$THEMES" | dmenu)
+fi
+
+if [ -z "$theme" ];
+then
+	echo "No theme selected!"
+	exit 1
+fi
+
+#echo $theme > "$HOME/.config/x/theme"
+cp "$THEMES/$theme" "$HOME/.config/x/xresources"
+
+# reload the xresources file
+[ -f ~/.config/x/xresources ] && xrdb -merge -I$HOME ~/.config/x/xresources
+
+# refresh dunst
+refdunst norefresh
+
+# send refresh signals to dwm, st and dmenu
+#xsetroot -name "fsignal:refresh i 1"
+pidof dwm | xargs kill -s USR1
+pidof st | xargs kill -s USR1
+
+# notify the user
+dunstify -r 10000007 -u normal -i "$icon" "Display theme" "$theme"
+

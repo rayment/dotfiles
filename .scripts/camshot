@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# take a photo through the webcam
+
+icon="$HOME/.config/dunst/icons/camera.png"
+
+SCR_DIR="$HOME/Pictures/Screenshots"
+SCR_NAME="webcam-$(date '+%Y%m%d-%H%M%S').png"
+
+ffmpeg -f v4l2 -video_size 1280x720 -i /dev/video0 -frames 1 "$SCR_DIR/$SCR_NAME"
+dunstify -r 10000005 -i "$icon" "Webcam captured" "$SCR_NAME"

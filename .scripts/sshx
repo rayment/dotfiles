@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# connect to SSH with X11 forwarding with faster output
+
+ssh -XC -caes128-ctr $@
+

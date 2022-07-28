@@ -1,0 +1,14 @@
+#!/bin/sh
+
+icon_on="$HOME/.config/dunst/icons/wlan-on.png"
+icon_off="$HOME/.config/dunst/icons/wlan-off.png"
+
+state="$(rfkill | awk '$0 ~ "wlan" {print $4}')"
+
+if [ "$state" = "unblocked" ];
+then
+	dunstify -r 10000001 -u normal -i "$icon_on" "WLAN" "Enabled"
+else
+	dunstify -r 10000001 -u normal -i "$icon_off" "WLAN" "Disabled"
+fi
+
