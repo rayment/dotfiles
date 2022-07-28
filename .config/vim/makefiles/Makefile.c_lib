@@ -1,3 +1,6 @@
+# edit this to change the file location for `make install' and `make uninstall'
+export PREFIX=/usr/local
+
 export DEBUG?=0
 VERSION:=1.0.0
 LIBNAME:=mylib
@@ -33,6 +36,11 @@ else
 LIBLIBS:=$(shell pkg-config --libs $(LIBRARIES))
 LIBFLAGS:=$(shell pkg-config --cflags $(LIBRARIES))
 endif
+
+HEADERS:=$(shell find include/ -name '*.h')
+HEADER_DIRS:=$(shell find include/* -type d)
+PREFIXED_HEADERS:=$(patsubst include/%,$(PREFIX)/include/%,$(HEADERS))
+PREFIXED_HEADER_DIRS:=$(patsubst include/%,$(PREFIX)/include/%,$(HEADER_DIRS))
 
 # OS-dependant variables
 ifeq ($(OS),Windows_NT)
@@ -104,8 +112,23 @@ dist:
 	tar -cJf $(BINARY)-$(VERSION).tar.xz $(BINARY)-$(VERSION)
 	rm -rf $(BINARY)-$(VERSION)
 
+install:
+	install -d $(PREFIX)/include
+	cp -R include/* $(PREFIX)/include/
+	echo $(PREFIXED_HEADER_DIRS) | xargs -r chmod 755
+	echo $(PREFIXED_HEADERS) | xargs -r chmod 644
+	install -d $(PREFIX)/lib
+	cp -a -f build/$(LINK_LIB) $(PREFIX)/lib
+	install build/$(DYNAMIC_LIB) $(PREFIX)/lib
+	ldconfig || true
+
+uninstall:
+	rm -f $(PREFIX)/lib/$(LINK_LIB)
+	rm -f $(PREFIX)/lib/$(DYNAMIC_LIB)
+	rm -rf $(PREFIXED_HEADERS)
+
 clean:
 	rm -rf build obj
 
-.PHONY: all dist clean
+.PHONY: all dist install uninstall clean
 

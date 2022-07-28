@@ -1,5 +1,5 @@
 # edit this to change the file location for `make install' and `make uninstall'
-PREFIX=/usr/local
+export PREFIX=/usr/local
 
 export DEBUG?=0
 VERSION:=1.0.0
