@@ -1,0 +1,88 @@
+"        _
+" __   _(_)_ __ ___  _ __ ___
+" \ \ / / | '_ ` _ \| '__/ __|
+"  \ V /| | | | | | | | | (__
+"   \_/ |_|_| |_| |_|_|  \___|
+"
+
+set viminfo+=<200
+set viminfo+=n~/.cache/vim/viminfo
+set colorcolumn=80
+set formatoptions+=cro
+set number
+set background=dark
+set wildmenu
+syntax on
+
+" auto-compilation
+autocmd BufWritePost *.tex :silent !latexmk -pdf % && latexmk -c
+
+" auto code headers
+autocmd BufNewFile *.c,*.cpp,*.tpp,*.cs,*.ld,*.js,*.vert,*.frag,*.glsl :silent 0r !~/.config/vim/templates/c.py %
+autocmd BufNewFile *.h,*.hpp execute ':silent 0r !~/.config/vim/templates/cheader.py %' | 10
+autocmd BufNewFile *.java execute ':silent 0r !~/.config/vim/templates/java.py %' | 11
+autocmd BufNewFile *.S,*.asm :silent 0r !~/.config/vim/templates/asm.py %
+autocmd BufNewFile *.py :silent 0r !~/.config/vim/templates/python.py %
+autocmd BufNewFile *.rb :silent 0r !~/.config/vim/templates/ruby.py %
+autocmd BufNewFile *.pl :silent 0r !~/.config/vim/templates/perl.py %
+autocmd BufNewFile *.php execute ':silent 0r !~/.config/vim/templates/php.py %' | 9
+autocmd BufNewFile *.html execute ':silent 0r !~/.config/vim/templates/html.py %' | 19
+autocmd BufNewFile *.tex execute ':silent 0r !~/.config/vim/templates/latex.py %' | 43
+autocmd BufNewFile *.sh execute ':silent 0r !~/.config/vim/templates/shell.py %' | 10
+autocmd BufNewFile Makefile call LoadMakefile() | 10
+autocmd BufNewFile README execute ':silent 0r !~/.config/vim/templates/readme.py %' | 0
+autocmd BufNewFile TODO execute ':silent 0r ~/.config/vim/templates/todo' | 4
+autocmd BufNewFile COPYING call LoadLicense(1) | 0
+autocmd BufNewFile LICENSE call LoadLicense(1) | 0
+autocmd BufNewFile Doxyfile execute '0r !doxygen -g -' | 0
+
+" linux code style
+
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set textwidth=80
+set noexpandtab
+set cinoptions=:0,l1,t0,g0,(0
+
+if &term =~ '^screen'
+    " tmux will send xterm-style keys when its xterm-keys option is on
+    execute "set <xUp>=\e[1;*A"
+    execute "set <xDown>=\e[1;*B"
+    execute "set <xRight>=\e[1;*C"
+    execute "set <xLeft>=\e[1;*D"
+endif
+
+" bold current line and underlined cyan line number
+set cursorline
+highlight CursorLine term=bold cterm=bold
+highlight CursorLineNr term=bold,underline cterm=bold,underline ctermfg=cyan
+
+highlight default link LinuxError ErrorMsg
+
+syn match LinuxError / \+\ze\t/                " spaces before tab
+syn match LinuxError /\%>80v[^()\{\}\[\]<>]\+/ " virtual column 81 and more
+
+" highlight trailing whitespace unless in insert mode
+autocmd InsertEnter * match LinuxError /\s\+\%#\@<!$/
+autocmd InsertLeave * match LinuxError /\s\+$/
+
+" open binary files in hex mode
+augroup Binary
+	au!
+	au BufReadPre *.bin,*.rom let &bin=1
+	au BufReadPost *.bin,*.rom if &bin | %!xxd
+	au BufReadPost *.bin,*.rom set ft=xxd | endif
+	au BufWritePre *.bin,*.rom if &bin | %!xxd -r
+	au BufWritePre *.bin,*.rom endif
+	au BufWritePost *.bin,*.rom if &bin | %!xxd
+	au BufWritePost *.bin,*.rom set nomod | endif
+augroup END
+
+" custom commands
+source ~/.config/vim/license.vim
+source ~/.config/vim/makefile.vim
+
+command! License :call LoadLicense(0)
+command! NewMakefile :call LoadMakefile()
+
