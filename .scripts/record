@@ -118,9 +118,11 @@ encode() {
 	ask_compression
 	filename="$1"
 	outfilename="${filename%.*}-encoded.$ext"
-	if [ "$fps" -ne 0 ];
+	if [ "$fps" != 0 ];
 	then
 		fps="-r $fps"
+	else
+		fps=""
 	fi
 	ffmpeg -i "$filename" $vcodec $acodec $fps -crf $crf "$outfilename"
 }

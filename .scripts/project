@@ -1,0 +1,27 @@
+#!/bin/sh
+
+#
+# project
+# Makefile-based project generator.
+#
+# Author       : Finn Rayment <finn@rayment.fr>
+# Date created : 28/07/2022
+#
+
+if [ -z "$1" ];
+then
+	echo "Usage: project <name>"
+	exit 1
+fi
+
+name="$1"
+dir="$HOME/Projects/$name"
+
+mkdir -p "$dir"
+mkdir "$dir/src"
+mkdir "$dir/include"
+vim -c "wq" "$dir/COPYING" || true
+vim -c "wq" "$dir/TODO" || true
+vim "$dir/README" || true
+vim -c "wq" "$dir/Makefile" && sed -i 's/a.out/'"$name"'/g' "$dir/Makefile" && sed -i 's/mylib/'"$name"'/g' "$dir/Makefile"
+
