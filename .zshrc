@@ -78,7 +78,7 @@ vcs_info_wrapper() {
 }
 
 # system variables
-export PATH="$HOME/.scripts:$HOME/.scripts/shortcuts:$HOME/.local/bin;$PATH"
+export PATH="$HOME/.scripts:$HOME/.scripts/shortcuts:$HOME/.local/bin:$PATH"
 if [ "$(whoami)" = "root" ];
 then
 	export PROMPT="%B%F{red}%n%F{green}@%M:%F{cyan}%1~%B%F{green}%b%f\$ "
