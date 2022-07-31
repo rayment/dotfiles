@@ -32,6 +32,8 @@ autocmd BufNewFile *.sh execute ':silent 0r !~/.config/vim/templates/shell.py %'
 autocmd BufNewFile Makefile call LoadMakefile() | 10
 autocmd BufNewFile README execute ':silent 0r !~/.config/vim/templates/readme.py %' | 0
 autocmd BufNewFile TODO execute ':silent 0r ~/.config/vim/templates/todo' | 4
+autocmd BufNewFile NEWS execute ':silent 0r ~/.config/vim/templates/news' | 4
+autocmd BufNewFile CHANGES execute ':silent 0r ~/.config/vim/templates/news' | 4
 autocmd BufNewFile COPYING call LoadLicense(1) | 0
 autocmd BufNewFile LICENSE call LoadLicense(1) | 0
 autocmd BufNewFile Doxyfile execute '0r !doxygen -g -' | 0
