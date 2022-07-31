@@ -17,6 +17,12 @@ fi
 name="$1"
 dir="$HOME/Projects/$name"
 
+if [ -e "$dir" ];
+then
+	echo "Project already exists!"
+	exit 1
+fi
+
 mkdir -p "$dir"
 mkdir "$dir/src"
 mkdir "$dir/include"
