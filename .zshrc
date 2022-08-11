@@ -113,7 +113,7 @@ alias watch="watch --color"           # coloured watch
 alias cfg="git --git-dir=$HOME/.dot --work-tree=$HOME"
                                       # dotfile git alias
 alias clean="make clean"              # when I forget to type make
-alias open="xdg-open"                 # open files by mime-type
+alias open="xdg-open 2>/dev/null"     # open files by mime-type
 alias procs="ps haux Ou | cut '-d ' -f1 | uniq -c"
                                       # num. of running procs.
 alias search="grep -irnw . -e"        # search for keyword in files recursively
