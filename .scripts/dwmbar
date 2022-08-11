@@ -105,6 +105,8 @@ run_bottom() {
 	if [ -n "${wan}" ];
 	then
 		echo "WAN $wan"
+	else
+		echo "NO WAN"
 	fi
 }
 
