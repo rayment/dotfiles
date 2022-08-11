@@ -78,6 +78,7 @@ vcs_info_wrapper() {
 }
 
 # system variables
+export MANPATH="/usr/local/man:$MANPATH"
 export PATH="$HOME/.scripts:$HOME/.scripts/shortcuts:$HOME/.local/bin:$PATH"
 if [ "$(whoami)" = "root" ];
 then
@@ -112,16 +113,17 @@ alias watch="watch --color"           # coloured watch
 alias cfg="git --git-dir=$HOME/.dot --work-tree=$HOME"
                                       # dotfile git alias
 alias clean="make clean"              # when I forget to type make
+alias open="xdg-open"                 # open files by mime-type
 alias procs="ps haux Ou | cut '-d ' -f1 | uniq -c"
                                       # num. of running procs.
-alias search="grep -irnw . -e $@"     # search for keyword in files recursively
+alias search="grep -irnw . -e"        # search for keyword in files recursively
 alias shutdown="shutdown -h now"      # easy shutdown
 alias wget="wget --hsts-file ~/.cache/wget/hsts"
                                       # hide away the wget hosts file
 
 # autocompletions
 autoload -U compinit
-compinit
+compinit -d ~/.cache/zsh/zcompdump
 
 # completion style
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
