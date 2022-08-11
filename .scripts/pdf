@@ -1,0 +1,27 @@
+#!/bin/sh
+
+if [ -z "$1" ];
+then
+	echo "A file path is required!"
+	exit 1
+fi
+
+exec 3< <(mupdf $@ 2>&1)
+out=$(cat <&3)
+#if [ "$err" != "0" ];
+#then
+	case "$out" in
+		*"error: Needs a password"*)
+			printf "Password: "
+			read -rs pdf_pass
+			echo
+			mupdf -p "$pdf_pass" $@
+			if [ "$?" != "0" ];
+			then
+				echo "Incorrect password!"
+				exit 0
+			fi
+			;;
+	esac
+#fi
+
