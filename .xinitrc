@@ -54,5 +54,5 @@ redshift -c ~/.config/redshift/redshift.conf &
 xhost si:localuser:$(whoami)
 
 # execute window manager
-exec dwm; exit
+exec dbus-launch --sh-syntax --exit-with-session dwm; exit
 
