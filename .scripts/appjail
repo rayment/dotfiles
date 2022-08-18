@@ -1,11 +1,11 @@
 #!/bin/bash
 
 firejail \
-	--noprofile \
 	--deterministic-shutdown \
 	--chroot=/jail \
 	--shell=/bin/zsh \
 	--private-dev \
 	$@
+	#--noprofile \
 	#--private-tmp \
 
