@@ -25,6 +25,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 
 # user variables
 export BROWSER=firefox
+export DOWNLOADS="$HOME/Temp"
 export EDITOR=vim
 export CSCOPE_EDITOR=vim
 export MANPAGER=manpager
