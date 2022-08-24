@@ -1,0 +1,73 @@
+#!/bin/sh
+
+#
+# toggle HDMI display
+#
+# author       : Finn Rayment <finn@rayment.fr>
+# date created : 04/02/2021
+#
+
+# set these two variables to the internal and external monitor ids
+intern=eDP
+extern=HDMI-A-0
+
+# print help message
+help() {
+	echo "vga <mode>"
+	echo "    help          - show this message"
+	echo "    off           - no HDMI output"
+	echo "    solo          - HDMI only without primary"
+	echo "    mirror        - HDMI mirror primary"
+	echo "    left          - HDMI left of primary"
+	echo "    right         - HDMI right of primary"
+	echo "    above         - HDMI above primary"
+	echo "    below         - HDMI below primary"
+}
+
+off() {
+	xrandr --output "$intern" --primary --auto --output "$extern" --off
+	refbg
+}
+
+solo() {
+	xrandr --output "$intern" --off --output "$extern" --primary --auto
+	refbg
+}
+
+mirror() {
+	xrandr --output "$extern" --auto --same-as "$intern" --auto
+	refbg
+}
+
+left() {
+	xrandr --output "$intern" --primary --auto --output "$extern" --left-of "$intern" --auto
+	refbg
+}
+
+right() {
+	xrandr --output "$intern" --primary --auto --output "$extern" --right-of "$intern" --auto
+	refbg
+}
+
+above() {
+	xrandr --output "$intern" --primary --auto --output "$extern" --above "$intern" --auto
+	refbg
+}
+
+below() {
+	xrandr --output "$intern" --primary --auto --output "$extern" --below "$intern" --auto
+	refbg
+}
+
+# parse arguments
+case "$1" in
+	off)   off ;;
+	solo) solo ;;
+	mirror) mirror ;;
+	left)  left ;;
+	right) right ;;
+	above) above ;;
+	below) below ;;
+	help|*) help  ;;
+esac
+
