@@ -42,7 +42,7 @@ XF86TouchpadToggle
 
 # Sleep key on external keyboards
 XF86Display
-	s2ram && lock
+	(lock &) && sleep 1 && s2ram
 
 # Screenshot
 Print
