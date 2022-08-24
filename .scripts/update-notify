@@ -13,6 +13,8 @@ icon="$HOME/.config/dunst/icons/gentoo.png"
 export DISPLAY=:0
 export XUSER=$(ps -eo uname,args --sort start_time | grep startx | awk '{print $1}' | head -n1)
 
+sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon" "portage" "Syncing repositories..."
+
 # sync for new updates
 emerge --sync || exit 1
 
