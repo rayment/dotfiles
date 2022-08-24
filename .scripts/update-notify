@@ -1,29 +1,33 @@
 #!/bin/sh
 
 #
-# portage update notifier
+# portage (host) / apt (jailed) update notifier
 #
 # author        : Finn Rayment <finn@rayment.fr>
 # date created  : 02/07/2022
 #
 
-icon="$HOME/.config/dunst/icons/gentoo.png"
+icon_portage="/home/finn/.config/dunst/icons/gentoo.png"
+icon_apt="/home/finn/.config/dunst/icons/debian.png"
 
 # display the updates to the logged in user
 export DISPLAY=:0
 export XUSER=$(ps -eo uname,args --sort start_time | grep startx | awk '{print $1}' | head -n1)
 
-sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon" "portage" "Syncing repositories..."
+if [ -n "$XUSER" ];
+then
+	sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon_portage" "portage" "Syncing repositories..."
+fi
 
 # sync for new updates
-emerge --sync || exit 1
+emerge --sync
 
 if [ -n "$XUSER" ];
 then
 	HOME_DIR=$(eval echo ~$XUSER)
 	export XAUTHORITY=$HOME_DIR/.config/x/xauthority
 
-	sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon" "portage" "Finished scheduled sync."
+	sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon_portage" "portage" "Finished scheduled sync."
 
 	# do a pretend emerge and grep the total changes
 	BUILDS=$(eval emerge -uDNpv --with-bdeps=y @world | grep "Total" | head -n1 | awk '{ print $2 }')
@@ -33,16 +37,50 @@ then
 	then
 		if [ ! "$REMOVALS" = 0 ];
 		then
-			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon" "portage" "<b>$BUILDS</b> package(s) are waiting to be emerged.\n<b>$REMOVALS</b> package(s) are slated for removal."
+			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon_portage" "portage" "<b>$BUILDS</b> package(s) are waiting to be emerged.\n<b>$REMOVALS</b> package(s) are slated for removal."
 		else
-			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon" "portage" "<b>$BUILDS</b> package(s) are waiting to be emerged."
+			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon_portage" "portage" "<b>$BUILDS</b> package(s) are waiting to be emerged."
 		fi
 	else
 		if [ ! "$REMOVALS" = 0 ];
 		then
-			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon" "portage" "<b>$REMOVALS</b> package(s) are slated for removal."
+			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon_portage" "portage" "<b>$REMOVALS</b> package(s) are slated for removal."
 		else
-			sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon" "portage" "Nothing to update or remove."
+			sudo -u $XUSER dunstify -r 10000009 -u normal -i "$icon_portage" "portage" "Nothing to update or remove."
+		fi
+	fi
+fi
+
+if [ -n "$XUSER" ];
+then
+	sudo -u $XUSER dunstify -r 10000013 -u normal -i "$icon_apt" "apt" "Syncing package list..."
+fi
+
+# sync for new updates in jail
+sujail apt update
+
+if [ -n "$XUSER" ];
+then
+	sudo -u $XUSER dunstify -r 10000013 -u normal -i "$icon_apt" "apt" "Finished syncing packages."
+
+	# do a pretend emerge and grep the total changes
+	BUILDS=$(eval sujail apt-get -q -y -s upgrade | grep "^Inst" | wc -l)
+	REMOVALS=$(eval sujail apt-get -q -y -s autoremove | grep "^Remv" | wc -l)
+
+	if [ ! "$BUILDS" = 0 ];
+	then
+		if [ ! "$REMOVALS" = 0 ];
+		then
+			sudo -u $XUSER dunstify -r 10000013 -u critical -i "$icon_apt" "apt" "<b>$BUILDS</b> package(s) are waiting to be updated.\n<b>$REMOVALS</b> package(s) are slated for removal."
+		else
+			sudo -u $XUSER dunstify -r 10000013 -u critical -i "$icon_apt" "apt" "<b>$BUILDS</b> package(s) are waiting to be updated."
+		fi
+	else
+		if [ ! "$REMOVALS" = 0 ];
+		then
+			sudo -u $XUSER dunstify -r 10000013 -u critical -i "$icon_apt" "apt" "<b>$REMOVALS</b> package(s) are slated for removal."
+		else
+			sudo -u $XUSER dunstify -r 10000013 -u normal -i "$icon_apt" "apt" "Nothing to update or remove."
 		fi
 	fi
 fi
