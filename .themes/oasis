@@ -2,7 +2,7 @@
 Xcursor.theme: Simp1e
 Xcursor.size: 32
 dwm.gappx: 16
-dunst.theme: default
+dunst.theme: default-dark
 
 ! other metadata configuration
 st.termname: st-256color

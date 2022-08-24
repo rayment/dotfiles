@@ -1,0 +1,85 @@
+! X11 related configuration
+Xcursor.theme: Simp1e
+Xcursor.size: 32
+dwm.gappx: 1
+dunst.theme: default-light
+
+! other metadata configuration
+st.termname: st-256color
+
+! system font configuration
+dwm.font: Unifont
+dmenu.font: Unifont
+st.font: Unifont:autohint=true:size=12
+dunst.font: Unifont
+
+! st configuration
+! ----------------
+! 8 normal colors
+! black
+st.color0: black
+! red
+st.color1: red3
+! green
+st.color2: green3
+! yellow
+st.color3: yellow3
+! blue
+st.color4: blue2
+! magenta
+st.color5: magenta3
+! cyan
+st.color6: cyan3
+! white
+st.color7: gray90
+!
+! 8 bright colors
+! black
+st.color8: gray50
+! red
+st.color9: red
+! green
+st.color10: green
+! yellow
+st.color11: yellow
+! blue
+st.color12: #5c5cff
+! magenta
+st.color13: magenta
+! cyan
+st.color14: cyan
+! white
+st.color15: white
+! default colors
+!st.background: #202020
+st.background: #222222
+st.foreground: #cfcfcf
+st.cursorColor: #808080
+
+! dmenu configuration
+! -------------------
+dmenu.normbgcolor: #222222
+dmenu.normfgcolor: #cfcfcf
+dmenu.normhighlightcolor: #005577
+dmenu.selbgcolor: #005577
+dmenu.selfgcolor: #cfcfcf
+dmenu.selhighlightcolor: yellow
+
+! dwm configuration
+! -----------------
+dwm.normbgcolor: #222222
+dwm.normfgcolor: #cfcfcf
+dwm.normbordercolor: #005577
+dwm.selbgcolor: #005577
+dwm.selfgcolor: #eeeeee
+dwm.selbordercolor: #cfcfcf
+
+! dunst configuration
+! -------------------
+dunst.background: #222222
+dunst.foreground: #cfcfcf
+dunst.frame: #808080
+dunst.framelow: #00af00
+dunst.framehigh: #af0000
+dunst.progressbar: #cfcfcf
+
