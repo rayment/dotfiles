@@ -11,6 +11,9 @@ light -S 50
 # hide mouse after period of no use
 unclutter -idle 1 -root -jitter 2 &
 
+# lock screen after 5m timeout
+xautolock -time 15 -locker lock &
+
 # themes folder
 export THEMES=~/.themes
 
@@ -34,7 +37,7 @@ refbg
 picom -b
 
 # music daemon
-[ ! -s /usr/share/mpd/pid ] && mpd &
+[ ! -s /usr/share/mpd/pid ] && mpd --stderr &2>~/.cache/mpderr &
 mpdnotifier &
 
 # keyboard mapping

@@ -33,7 +33,7 @@ export MANPAGER=manpager
 # hist file
 HISTSIZE=512
 HISTFILESIZE=1024
-HISTFILE=~/.cache/zsh/zsh_history
+export HISTFILE=~/.cache/zsh/zsh_history
 
 # timeout
 TMOUT=300
@@ -90,6 +90,7 @@ fi
 export RPROMPT=$'$(vcs_info_wrapper)'
 
 # command aliases
+alias bt="bluetoothctl"               # bluetooth manaager shortcut
 alias diff="diff --color=always"      # coloured diff
 alias feh="feh --scale-down"          # dimension-corrected feh
 alias firejail="LC_ALL=C TERM=xterm-color firejail"
@@ -97,6 +98,8 @@ alias firejail="LC_ALL=C TERM=xterm-color firejail"
 alias grep="grep --color=auto"        # coloured grep
 alias less="less -R"                  # escaped less
 alias fwupd="fwupdtool"               # firmware updater
+alias irc="weechat"                   # iirc alias
+alias iirc="weechat"                  # iirc alias
 alias ls="ls --color=auto -G"         # ungrouped ls
 alias la="ls -hlFH"                   # technical ls, no hidden files
 alias ll="ls -ahlFH"                  # technical ls
@@ -105,6 +108,7 @@ alias lynx="lynx -display_charset=utf8 -nopause -cfg=~/.config/lynx/lynxrc"
 alias mutt="neomutt"                  # shortened version of neomutt
 alias python="python3 -B"             # disable __pycache__
 alias python3="python3 -B"            # disable __pycache__
+alias rclear="clear && read"          # clear and wait for input
 alias tmux="tmux -f ~/.config/tmux/tmux.conf"
                                       # tmux with config
 alias vi="vim"                        # vi redirect
