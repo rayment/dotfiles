@@ -3,6 +3,11 @@
 # download and synchronise email accounts
 mbsync -c "$HOME/.config/mbsync/mbsyncrc" -a
 
+if [ "$?" != 0 ];
+then
+	exit # sync failed
+fi
+
 folder_blacklist="Drafts Rubbish Sent Spam cur new tmp"
 
 # count number of new messages
