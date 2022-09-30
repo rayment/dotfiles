@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+setopt +o nomatch
+
 # purge .DS_Store files and other crap
 rm -rf **/._*
 rm -rf **/.DS_Store
