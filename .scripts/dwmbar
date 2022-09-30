@@ -9,7 +9,7 @@ delim="|"
 
 # name and hostname
 module_hostname() {
-	echo "$(whoami)@$(hostname)"
+	echo "$(whoami)@$(hostname)-$(uname -r | cut -d'-' -f1)"
 }
 
 # available updates
