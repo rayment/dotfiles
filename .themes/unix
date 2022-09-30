@@ -1,7 +1,7 @@
 ! X11 related configuration
 Xcursor.theme: Simp1e
 Xcursor.size: 32
-dwm.gappx: 1
+dwm.gappx: 16
 dunst.theme: default-light
 
 ! other metadata configuration
