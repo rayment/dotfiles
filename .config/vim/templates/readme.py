@@ -20,9 +20,9 @@ print()
 print(name + ' is a ...')
 print()
 print('To build the documentation, read the DOCS file.')
-print('To install ' + name + ' on a POSIX or POSIX-like machine,' +
+print('To install ' + name + ' on a POSIX or POSIX-like machine, ' +
       'read the INSTALL file.')
-print('To install ' + name + ' on a Windows machine,' +
+print('To install ' + name + ' on a Windows machine, ' +
       'read the INSTALL.win file.')
 print()
 print(name + ' is licensed under ...')
