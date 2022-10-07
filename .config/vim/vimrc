@@ -12,6 +12,7 @@ set formatoptions+=cro
 set number
 set background=dark
 set wildmenu
+set incsearch
 syntax on
 
 " auto-compilation
