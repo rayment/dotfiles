@@ -6,12 +6,16 @@ func! LoadMakefile()
 	call inputsave()
 
 	echoc ""
+	echoc "0. Empty           (blank)"
 	echoc "1. C/C++           (hybrid, programs)"
 	echoc "2. C/C++           (hybrid, libraries)"
 	echoc "3. C/C++           (lex+yacc, parsers)"
 	let license = input('Project type? (1): ')
-	let particle = 'c_prog'
+	let particle = 'empty'
 	if len(license) == 1
+		if license[0] == '0'
+			let particle = 'empty'
+		endif
 		if license[0] == '1'
 			let particle = 'c_prog'
 		endif

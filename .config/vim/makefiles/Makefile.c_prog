@@ -14,7 +14,7 @@ export LD:=$(CC)
 CCFLAGS:=--std=c89
 CPPFLAGS:=--std=c++98
 CXXFLAGS:=-Wall -Wextra -Wpedantic -Werror --pedantic-errors \
-          -DVERSION=\"${VERSION}\"
+          -DVERSION=\"${VERSION}\" -D_POSIX_C_SOURCE=2
 LDFLAGS:=
 
 ifeq ($(DEBUG),1)
