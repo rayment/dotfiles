@@ -1,0 +1,46 @@
+#!/bin/sh
+
+#
+# usb-notify
+#
+# Author       : Finn Rayment <finn@rayment.fr>
+# Date created : 08/10/2022
+#
+
+icon="/home/finn/.config/dunst/icons/usb.png"
+
+if [ -z "$2" ] || [ "$1" != "add" -a "$1" != "remove" ];
+then
+	echo "Usage: usb-notify [add|remove] <devname>"
+	exit 1
+fi
+
+export DISPLAY=:0
+export XUSER=$(ps -eo uname,args --sort start_time | grep startx | awk '{print $1}' | head -n1)
+HOME_DIR=$(eval echo ~$XUSER)
+export XAUTHORITY=$HOME_DIR/.config/x/xauthority
+
+DIRNAME=$(dirname $2)
+CHILDREN=$(ls /dev | grep `basename $2` | tail -n+2)
+NUM=$(echo $CHILDREN | wc -w)
+BODY="    <b>$2</b>"
+i=0
+for CHILD in $CHILDREN;
+do
+	if (($i < $NUM));
+	then
+		BODY+="<br>"
+	fi
+	BODY+="       |-<b>$CHILD</b>"
+	i=$(($i+1))
+done
+
+if [ "$1" == "add" ];
+then
+	sudo -u $XUSER dunstify -r 10000015 -u normal -i "$icon" "usb" \
+	"USB drive was inserted:<br>$BODY"
+else
+	sudo -u $XUSER dunstify -r 10000016 -u normal -i "$icon" "usb" \
+	"USB drive was removed:<br>$BODY"
+fi
+
