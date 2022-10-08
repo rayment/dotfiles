@@ -1,0 +1,17 @@
+10000001: wlan
+10000002: microphone
+10000003: keyboard
+10000004: backlight
+10000005: screenshot
+10000006: mail
+10000007: theme set
+10000008: touchpad
+10000009: portage
+10000010: music
+10000011: battery
+10000012: dunst refresh
+10000013: apt (jailed)
+10000014: emoji selector
+10000015: usb insertion
+10000016: usb removal
+
