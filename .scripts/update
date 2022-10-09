@@ -15,18 +15,18 @@ then
 	exit 0
 fi
 
-if [ -x $(command -v lsb_release) ];
+if ! [ -x $(command -v lsb_release) ];
 then
 	echo "Missing command lsb_release! Please consider installing it."
 	echo "Will attempt to detect package manager manually..."
-	if [ -x $(command -v apt) ];
-	then
-		distro="Debian"
-		echo "Found 'apt' package manager."
-	elif [ -x $(command -v emerge) ];
+	if [ -x $(command -v emerge) ];
 	then
 		distro="Gentoo"
 		echo "Found 'emerge' package manager."
+	elif [ -x $(command -v apt) ];
+	then
+		distro="Debian"
+		echo "Found 'apt' package manager."
 	else
 		echo "Could not find a valid package manager! Quitting..."
 		exit 1
