@@ -15,20 +15,43 @@ then
 	exit 0
 fi
 
-distro="$(lsb_release -i | awk '{print $3}')"
-if [ "$?" != 0 ];
+if [ -x $(command -v lsb_release) ];
 then
-	echo "Missing command lsb_release!"
-	exit 1
+	echo "Missing command lsb_release! Please consider installing it."
+	echo "Will attempt to detect package manager manually..."
+	if [ -x $(command -v apt) ];
+	then
+		distro="Debian"
+		echo "Found 'apt' package manager."
+	elif [ -x $(command -v emerge) ];
+	then
+		distro="Gentoo"
+		echo "Found 'emerge' package manager."
+	else
+		echo "Could not find a valid package manager! Quitting..."
+		exit 1
+	fi
+else
+distro="$(lsb_release -i | awk '{print $3}')"
 fi
+
+whoami="$(whoami)"
+privrun() {
+	if [ "$whoami" = "root" ];
+	then
+		$@
+	else
+		sudo $@
+	fi
+}
 
 sync() {
 	case "$distro" in
 	Debian)
-		sudo apt update
+		privrun apt update
 		;;
 	Gentoo)
-		sudo emerge --sync
+		privrun emerge --sync
 		;;
 	*)
 		echo "Unrecognised distribution '$distro'!"
@@ -40,10 +63,10 @@ sync() {
 fetch() {
 	case "$distro" in
 	Debian)
-		sudo apt upgrade --download-only
+		privrun apt upgrade --download-only
 		;;
 	Gentoo)
-		sudo emerge -auDNqvf --with-bdeps=y @world
+		privrun emerge -auDNqvf --with-bdeps=y @world
 		;;
 	*)
 		echo "Unrecognised distribution '$distro'!"
@@ -55,10 +78,10 @@ fetch() {
 install() {
 	case "$distro" in
 	Debian)
-		sudo apt upgrade
+		privrun apt upgrade
 		;;
 	Gentoo)
-		sudo emerge -auDNqv --with-bdeps=y @world
+		privrun emerge -auDNqv --with-bdeps=y @world
 		;;
 	*)
 		echo "Unrecognised distribution '$distro'!"
@@ -70,10 +93,10 @@ install() {
 clean() {
 	case "$distro" in
 	Debian)
-		sudo apt autoremove --purge
+		privrun apt autoremove --purge
 		;;
 	Gentoo)
-		sudo emerge -ac
+		privrun emerge -ac
 		;;
 	*)
 		echo "Unrecognised distribution '$distro'!"
