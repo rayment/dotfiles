@@ -1,0 +1,93 @@
+#!/bin/sh
+
+help() {
+	echo "update [option]"
+	echo "    help          - show this message"
+	echo "    sync          - synchronise local database with server"
+	echo "    fetch         - download update tarballs from server"
+	echo "    install       - install updates"
+	echo "    clean         - clean up local database"
+}
+
+if [ -z "$1" ];
+then
+	help
+	exit 0
+fi
+
+distro="$(lsb_release -i | awk '{print $3}')"
+if [ "$?" != 0 ];
+then
+	echo "Missing command lsb_release!"
+	exit 1
+fi
+
+sync() {
+	case "$distro" in
+	Debian)
+		sudo apt update
+		;;
+	Gentoo)
+		sudo emerge --sync
+		;;
+	*)
+		echo "Unrecognised distribution '$distro'!"
+		exit 1
+		;;
+	esac
+}
+
+fetch() {
+	case "$distro" in
+	Debian)
+		sudo apt upgrade --download-only
+		;;
+	Gentoo)
+		sudo emerge -auDNqvf --with-bdeps=y @world
+		;;
+	*)
+		echo "Unrecognised distribution '$distro'!"
+		exit 1
+		;;
+	esac
+}
+
+install() {
+	case "$distro" in
+	Debian)
+		sudo apt upgrade
+		;;
+	Gentoo)
+		sudo emerge -auDNqv --with-bdeps=y @world
+		;;
+	*)
+		echo "Unrecognised distribution '$distro'!"
+		exit 1
+		;;
+	esac
+}
+
+clean() {
+	case "$distro" in
+	Debian)
+		sudo apt autoremove --purge
+		;;
+	Gentoo)
+		sudo emerge -ac
+		;;
+	*)
+		echo "Unrecognised distribution '$distro'!"
+		exit 1
+		;;
+	esac
+}
+
+# parse arguments
+case "$1" in
+	sync)	sync ;;
+	fetch)	fetch  ;;
+	install) install ;;
+	clean) clean ;;
+	help|*) help  ;;
+esac
+
