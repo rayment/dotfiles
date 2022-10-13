@@ -27,11 +27,22 @@ BODY="    <b>$2</b>"
 i=0
 for CHILD in $CHILDREN;
 do
+	FSTYPE=$(blkid "$DIRNAME/$CHILD" -o export | grep TYPE | cut -f2 -d'=')
+	FSNAME=$(blkid "$DIRNAME/$CHILD" -o export | grep LABEL | cut -f2 -d'=')
 	if (($i < $NUM));
 	then
 		BODY+="<br>"
 	fi
-	BODY+="       |-<b>$CHILD</b>"
+	BODY+="       |-<b>$CHILD"
+	if [ -n "$FSTYPE" ];
+	then
+		BODY+=" ($FSTYPE)"
+	fi
+	if [ -n "$FSNAME" ];
+	then
+		BODY+=" - <i>$FSNAME</i>"
+	fi
+	BODY+="</b>"
 	i=$(($i+1))
 done
 
