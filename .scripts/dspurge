@@ -17,4 +17,8 @@ rm -rf **/*.o
 # git crap
 rm -rf **/*.orig
 rm -rf **/*.rej
+rm -rf **/*_BACKUP_*
+rm -rf **/*_BASE_*
+rm -rf **/*_LOCAL_*
+rm -rf **/*_REMOTE_*
 
