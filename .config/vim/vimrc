@@ -8,6 +8,8 @@
 set viminfo+=<200
 set viminfo+=n~/.cache/vim/viminfo
 set colorcolumn=80
+set numberwidth=4
+set laststatus=2
 set formatoptions+=cro
 set number
 set background=dark
@@ -39,6 +41,9 @@ autocmd BufNewFile COPYING call LoadLicense(1) | 0
 autocmd BufNewFile LICENSE call LoadLicense(1) | 0
 autocmd BufNewFile Doxyfile execute '0r !doxygen -g -' | 0
 
+" status line
+source ~/.config/vim/statusline.vim
+
 " linux code style
 
 set tabstop=4
@@ -56,10 +61,11 @@ if &term =~ '^screen'
     execute "set <xLeft>=\e[1;*D"
 endif
 
-" bold current line and underlined cyan line number
+" line editor styling
 set cursorline
 highlight CursorLine term=bold cterm=bold
-highlight CursorLineNr term=bold,underline cterm=bold,underline ctermfg=cyan
+highlight CursorLineNr term=bold cterm=bold ctermfg=yellow ctermbg=darkgrey
+highlight LineNr ctermfg=lightgrey ctermbg=darkgrey
 
 highlight default link LinuxError ErrorMsg
 
@@ -73,13 +79,13 @@ autocmd InsertLeave * match LinuxError /\s\+$/
 " open binary files in hex mode
 augroup Binary
 	au!
-	au BufReadPre *.bin,*.rom let &bin=1
-	au BufReadPost *.bin,*.rom if &bin | %!xxd
-	au BufReadPost *.bin,*.rom set ft=xxd | endif
-	au BufWritePre *.bin,*.rom if &bin | %!xxd -r
-	au BufWritePre *.bin,*.rom endif
-	au BufWritePost *.bin,*.rom if &bin | %!xxd
-	au BufWritePost *.bin,*.rom set nomod | endif
+	au BufReadPre   *.bin,*.rom,*.exe let &bin=1
+	au BufReadPost  *.bin,*.rom,*.exe if &bin | %!xxd
+	au BufReadPost  *.bin,*.rom,*.exe set ft=xxd | endif
+	au BufWritePre  *.bin,*.rom,*.exe if &bin | %!xxd -r
+	au BufWritePre  *.bin,*.rom,*.exe endif
+	au BufWritePost *.bin,*.rom,*.exe if &bin | %!xxd
+	au BufWritePost *.bin,*.rom,*.exe set nomod | endif
 augroup END
 
 " custom commands
