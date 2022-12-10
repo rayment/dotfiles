@@ -1,3 +1,5 @@
+#!/bin/sh
+
 #           _         _  _
 #    __  __(_) _ __  (_)| |_  _ __  ___
 #    \ \/ /| || '_ \ | || __|| '__|/ __|
@@ -43,9 +45,8 @@ mpdnotifier &
 # keyboard mapping
 #[ -f ~/.config/x/xmodmap ] && xmodmap ~/.config/x/xmodmap
 
-# sane trackpoint sensitivity
-xinput set-prop "SynPS/2 Synaptics TouchPad" 286 2.5
-xinput set-prop "TPPS/2 Elan TrackPoint" "libinput Accel Speed" -0.7
+# sane trackpad and trackpoint sensitivity
+sh ~/.config/x/xinput.sh
 
 # hotkey daemon
 sxhkd &
