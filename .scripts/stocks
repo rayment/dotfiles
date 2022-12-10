@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# show cryptocurrency stocks
+
+curl rate.sx/$1
+

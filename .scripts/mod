@@ -1,0 +1,20 @@
+#!/bin/sh
+
+mod="$1"
+
+if [ "$mod" == "644" ];
+then
+	find "$2" -type f -exec chmod 644 {} \;
+	find "$2" -type d -exec chmod 755 {} \;
+	exit
+elif [ "$mod" == "640" ];
+then
+	find "$2" -type f -exec chmod 640 {} \;
+	find "$2" -type d -exec chmod 750 {} \;
+	exit
+else
+	find "$3" -type f -exec chmod "$1" {} \;
+	find "$3" -type d -exec chmod "$2" {} \;
+	exit
+fi
+

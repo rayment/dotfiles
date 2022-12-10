@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/usr/libexec/cups/filter/texttopdf 1 1 1 1 1 $1 > $1.pdf
+

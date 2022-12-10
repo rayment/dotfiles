@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -z "$1" ];
+then
+	echo "At least one file path is required!"
+	exit 1
+fi
+
+gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE="MERGED-$1" -dBATCH $@
+

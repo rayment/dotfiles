@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# rip from audio CD to current directory
+
+cdparanoia -B
+
