@@ -1,0 +1,9 @@
+" theme related configuration
+"
+
+hi StatusColorNormal    ctermfg=%NORMFGCOLOR% ctermbg=%NORMBGCOLOR%
+hi StatusColorHighlight ctermfg=%HIGHFGCOLOR% ctermbg=%HIGHBGCOLOR%
+
+highlight CursorLineNr ctermfg=%SELFGCOLOR% ctermbg=%SELBGCOLOR%
+highlight LineNr ctermfg=%NORMFGCOLOR% ctermbg=%NORMBGCOLOR%
+

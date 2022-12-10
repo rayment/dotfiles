@@ -13,12 +13,14 @@ endfunction
 
 set statusline=
 set statusline+=%#PmenuSel#
+set statusline+=%#StatusColorHighlight#
 set statusline+=%{StatuslineGit()}
+set statusline+=%#StatusColorNormal#
 set statusline+=%#LineNr#
 set statusline+=\ %f
-set statusline+=%m\
+set statusline+=%m
 set statusline+=%=
-set statusline+=%#CursorColumn#
+set statusline+=%#StatusColorHighlight#
 set statusline+=\ %y
 set statusline+=\ %{&fileencoding?&fileencoding:&encoding}
 set statusline+=\[%{&fileformat}\]

@@ -17,6 +17,8 @@ set wildmenu
 set incsearch
 syntax on
 
+source ~/.config/vim/theme.vim
+
 " auto-compilation
 autocmd BufWritePost *.tex :silent !latexmk -pdf % && latexmk -c
 
@@ -64,8 +66,7 @@ endif
 " line editor styling
 set cursorline
 highlight CursorLine term=bold cterm=bold
-highlight CursorLineNr term=bold cterm=bold ctermfg=yellow ctermbg=darkgrey
-highlight LineNr ctermfg=lightgrey ctermbg=darkgrey
+highlight CursorLineNr term=bold cterm=bold
 
 highlight default link LinuxError ErrorMsg
 
