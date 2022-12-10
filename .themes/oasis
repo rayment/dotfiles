@@ -4,6 +4,14 @@ Xcursor.size: 32
 dwm.gappx: 16
 dunst.theme: default-dark
 
+! vim themes
+vim.normbgcolor: 8
+vim.normfgcolor: 15
+vim.highbgcolor: 3
+vim.highfgcolor: 0
+vim.selbgcolor:  3
+vim.selfgcolor:  0
+
 ! other metadata configuration
 st.termname: st-256color
 

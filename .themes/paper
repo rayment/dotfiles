@@ -1,0 +1,92 @@
+! X11 related configuration
+Xcursor.theme: Simp1e
+Xcursor.size: 32
+dwm.gappx: 16
+dunst.theme: default-light
+
+! vim themes
+vim.normbgcolor: 7
+vim.normfgcolor: 15
+vim.highbgcolor: 3
+vim.highfgcolor: 15
+vim.selbgcolor:  3
+vim.selfgcolor:  15
+
+! other metadata configuration
+st.termname: st-256color
+
+! system font configuration
+dwm.font: Unifont
+dmenu.font: Unifont
+st.font: Unifont:autohint=true:size=12
+dunst.font: Unifont
+
+! st configuration
+! ----------------
+! 8 normal colors
+! black
+st.color0: #1c1c1c
+! red
+st.color1: #af0000
+! green
+st.color2: #008700
+! yellow
+st.color3: #d75f00
+! blue
+st.color4: #0087af
+! magenta
+st.color5: #af005f
+! cyan
+st.color6: #005f87
+! white
+st.color7: #585858
+!
+! 8 bright colors
+! black
+st.color8: #808080
+! red
+st.color9: #d70000
+! green
+st.color10: #5faf00
+! yellow
+st.color11: #ffaf00
+! blue
+st.color12: #5fafd7
+! magenta
+st.color13: #d70087
+! cyan
+st.color14: #00afaf
+! white
+st.color15: #eeeeee
+! default colors
+st.background: #1c1c1c
+st.foreground: #eeeeee
+st.cursorColor: #808080
+
+! dmenu configuration
+! -------------------
+dmenu.normbgcolor: #585858
+dmenu.normfgcolor: #eeeeee
+dmenu.normhighlightcolor: #bcbcbc
+dmenu.selbgcolor: #d76f00
+dmenu.selfgcolor: #1c1c1c
+dmenu.selhighlightcolor: #eeeeee
+
+! dwm configuration
+! -----------------
+dwm.normbgcolor: #585858
+dwm.normfgcolor: #eeeeee
+dwm.normbordercolor: #bcbcbc
+dwm.selbgcolor: #d76f00
+dwm.selfgcolor: #1c1c1c
+dwm.selbordercolor: #d76f00
+
+! dunst configuration
+! -------------------
+dunst.background: #1c1c1c
+dunst.foreground: #eeeeee
+dunst.frame: #808080
+dunst.framelow: #5faf00
+dunst.framehigh: #d70000
+dunst.progressbar: #d75f00
+
