@@ -36,10 +36,11 @@ module_battery() {
 	if [ $batteries -gt 0 ];
 	then
 		echo "BAT"
-		for x in /sys/class/power_supply/BAT?/capacity;
+		for x in /sys/class/power_supply/BAT?;
 		do
-			lvl=$(cat $x)
-			echo "$lvl%"
+			lvl=$(cat $x/capacity)
+			cycles=$(cat $x/cycle_count)
+			echo "$lvl% [$cycles]"
 			if [ "$lvl" -le 10 ] && [ ! "$(cat /sys/class/power_supply/AC/online)" = 1 ];
 			then
 				dunstify -r 10000011 -u critical -i "$battery_icon" "Battery warning" "Battery level is at $lvl%"
