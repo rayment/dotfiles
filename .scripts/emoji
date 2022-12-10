@@ -1,5 +1,7 @@
 #!/bin/bash
 
+icon="$HOME/.config/dunst/icons/emoji.png"
+
 window=$(xdotool getactivewindow)
 
 set -- junk $(cat ~/.cache/emoji | cut -d '|' -f 1 | dmenu -p emoji)
@@ -12,7 +14,11 @@ fi
 
 emoji=$(cat ~/.cache/emoji | grep "^$(echo $@)|" | cut -d '|' -f 2 | tr -s '\r')
 
+dunstify -r 10000014 -u normal -i "$icon" "Emoji Selector" "Selected: $emoji"
 echo "$emoji" | xclip -selection clipboard
 
 xdotool windowactivate $window
+
+# uncomment to type the emoji on selection
+#xdotool type "$emoji"
 
