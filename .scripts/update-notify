@@ -36,7 +36,7 @@ then
 	if [ ! "$BUILDS" = 0 ];
 	then
 		# download the packages into cache
-		emerge -auDNqvf --with-bdeps=y @world
+		update fetch
 		if [ ! "$REMOVALS" = 0 ];
 		then
 			sudo -u $XUSER dunstify -r 10000009 -u critical -i "$icon_portage" "portage" "<b>$BUILDS</b> package(s) are waiting to be emerged.\n<b>$REMOVALS</b> package(s) are slated for removal."
