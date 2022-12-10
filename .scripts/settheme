@@ -32,6 +32,21 @@ cp "$THEMES/$theme" "$HOME/.config/x/xresources"
 # reload the xresources file
 [ -f ~/.config/x/xresources ] && xrdb -merge -I$HOME ~/.config/x/xresources
 
+# update vim
+normbgcolor=$(xrdb -query | grep 'vim.normbgcolor' | awk '{ print $2 }')
+normfgcolor=$(xrdb -query | grep 'vim.normfgcolor' | awk '{ print $2 }')
+highbgcolor=$(xrdb -query | grep 'vim.highbgcolor' | awk '{ print $2 }')
+highfgcolor=$(xrdb -query | grep 'vim.highfgcolor' | awk '{ print $2 }')
+selbgcolor=$(xrdb -query | grep 'vim.selbgcolor' | awk '{ print $2 }')
+selfgcolor=$(xrdb -query | grep 'vim.selfgcolor' | awk '{ print $2 }')
+cp "$HOME/.config/vim/theme.vim.template" "$HOME/.config/vim/theme.vim"
+sed -i "s/%NORMBGCOLOR%/$normbgcolor/g" "$HOME/.config/vim/theme.vim"
+sed -i "s/%NORMFGCOLOR%/$normfgcolor/g" "$HOME/.config/vim/theme.vim"
+sed -i "s/%HIGHBGCOLOR%/$highbgcolor/g" "$HOME/.config/vim/theme.vim"
+sed -i "s/%HIGHFGCOLOR%/$highfgcolor/g" "$HOME/.config/vim/theme.vim"
+sed -i "s/%SELBGCOLOR%/$selbgcolor/g" "$HOME/.config/vim/theme.vim"
+sed -i "s/%SELFGCOLOR%/$selfgcolor/g" "$HOME/.config/vim/theme.vim"
+
 # refresh dunst
 refdunst norefresh
 
