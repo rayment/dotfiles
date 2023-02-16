@@ -3,7 +3,7 @@
 firejail \
 	--deterministic-shutdown \
 	--chroot=/jail \
-	--shell=/bin/zsh \
+	--shell=/bin/bash \
 	--private-dev \
 	$@
 	#--noprofile \
