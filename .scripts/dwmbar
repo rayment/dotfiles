@@ -96,6 +96,9 @@ run_bottom() {
 	echo "$delim"
 	echo "MEM"
 	cat "$HOME/.config/status/rammem"
+	echo "$delim"
+	echo "DISK"
+	cat "$HOME/.config/status/disk"
 	internet="$(cat "$HOME/.config/status/internet")"
 	wan="$(cat "$HOME/.config/status/wan")"
 	if [ -n "${internet}" ];

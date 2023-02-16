@@ -10,10 +10,15 @@ module_rammem() {
 	free -h | awk '/^Mem:/ {print $3 "/" $2}'
 }
 
+module_cpumem() {
+	mpstat 2 1 | tail -n1 | awk -F " " '{print 100-$12"%"}'
+}
+
 while true;
 do
 	module_cputhermal > "$HOME/.config/status/cputemp"
 	module_rammem > "$HOME/.config/status/rammem"
+	module_cpumem > "$HOME/.config/status/cpumem"
 	dwmbar
 	sleep 5
 done

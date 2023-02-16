@@ -2,11 +2,16 @@
 
 # show connections and addresses
 module_internet() {
-	eth="$(sed "s/down//;s/up/ETH/" /sys/class/net/e*/operstate)"
-	if [ -n "${eth}" ];
-	then
-		echo "$eth"
-	fi
+	for ethdev in "/sys/class/net/e*";
+	do
+		eth="$(sed "s/down//;s/up/ETH/" "$ethdev/operstate")"
+		if [ -n "${eth}" ];
+		then
+			ethspeed=$(cat "$ethdev/speed")
+			echo "$eth ($ethspeed)"
+		fi
+	done
+
 	wifi="$(grep "^\s*w" /proc/net/wireless | awk '{ print "WIFI", int($3 * 100 / 70) "%" }')"
 	if [ -n "${wifi}" ];
 	then
@@ -21,16 +26,14 @@ module_internet() {
 	fi
 }
 
-# show cpu usage
-module_cpumem() {
-	mpstat 2 1 | grep -A 5 "%idle" | tail -n 1 | awk -F " " '{print 100-$12"%"}'
-	#mpstat -P 0-15 2 1 | tail -16 | awk '{printf 100-$NF"% "}' | xargs
+module_disk() {
+	echo $(df -h --total | tail -n1 | awk -vOFS='/' '{ print $3, $2 }')
 }
 
 while true;
 do
 	module_internet > "$HOME/.config/status/internet"
-	module_cpumem > "$HOME/.config/status/cpumem"
+	module_disk > "$HOME/.config/status/disk"
 	dwmbar
 	sleep 30
 done
