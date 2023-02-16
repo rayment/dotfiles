@@ -76,10 +76,10 @@ dmenu.selhighlightcolor: #eeeeee
 ! -----------------
 dwm.normbgcolor: #585858
 dwm.normfgcolor: #eeeeee
-dwm.normbordercolor: #bcbcbc
+dwm.normbordercolor: #d76f00
 dwm.selbgcolor: #d76f00
 dwm.selfgcolor: #1c1c1c
-dwm.selbordercolor: #d76f00
+dwm.selbordercolor: #bcbcbc
 
 ! dunst configuration
 ! -------------------
