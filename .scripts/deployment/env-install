@@ -1,0 +1,253 @@
+#!/bin/sh
+
+#
+# env-install
+# Instantly setup a Unix environment.
+# This script must be run as root.
+#
+# Author       : Finn Rayment <finn@rayment.fr>
+# Date created : 13/10/2022
+#
+
+privrun() {
+	if [ "$(whoami)" = "root" ];
+	then
+		$@
+	else
+		sudo $@
+	fi
+}
+
+pkg_update() {
+	distro="nil"
+	if ! [ -x $(command -v lsb_release) ];
+	then
+		if [ -x $(command -v emerge) ];
+		then
+			distro="Gentoo"
+		elif [ -x $(command -v apt) ];
+		then
+			distro="Debian"
+		else
+			echo "Could not find a valid package manager! Quitting..."
+			exit 1
+		fi
+	else
+		distro="$(lsb_release -i | awk '{print $3}')"
+	fi
+	case "$distro" in
+	Debian)
+		privrun apt update
+		;;
+	Gentoo)
+		privrun emerge --sync
+		;;
+	*)
+		echo "Could not find a valid package manager! Quitting..."
+		exit 1
+		;;
+	esac
+}
+
+pkg_remove() {
+	distro="nil"
+	if ! [ -x $(command -v lsb_release) ];
+	then
+		if [ -x $(command -v emerge) ];
+		then
+			distro="Gentoo"
+		elif [ -x $(command -v apt) ];
+		then
+			distro="Debian"
+		else
+			echo "Could not find a valid package manager! Quitting..."
+			exit 1
+		fi
+	else
+		distro="$(lsb_release -i | awk '{print $3}')"
+	fi
+	case "$distro" in
+	Debian)
+		privrun apt purge -y "$1"
+		privrun apt autoremove -y
+		;;
+	Gentoo)
+		privrun emerge --deselect "$1"
+		privrun emerge -ac
+		;;
+	*)
+		echo "Could not find a valid package manager! Quitting..."
+		exit 1
+		;;
+	esac
+}
+
+pkg_install() {
+	distro="nil"
+	if ! [ -x $(command -v lsb_release) ];
+	then
+		if [ -x $(command -v emerge) ];
+		then
+			distro="Gentoo"
+		elif [ -x $(command -v apt) ];
+		then
+			distro="Debian"
+		else
+			echo "Could not find a valid package manager! Quitting..."
+			exit 1
+		fi
+	else
+		distro="$(lsb_release -i | awk '{print $3}')"
+	fi
+	case "$distro" in
+	Debian)
+		privrun apt install -y "$1"
+		;;
+	Gentoo)
+		privrun emerge -qv "$1"
+		;;
+	*)
+		echo "Could not find a valid package manager! Quitting..."
+		exit 1
+		;;
+	esac
+}
+
+cmd_install() {
+	if ! [ -x $(command -v "$1") ];
+	then
+		pkg_install "$1"
+	fi
+}
+
+setup_python() {
+	pyfile="/usr/share/python/python_startup.py"
+	mkdir -p "/usr/share/python"
+	touch "$pyfile"
+	chmod 644 "$pyfile"
+	echo "#!/usr/bin/env python" > "$pyfile"
+	echo "import atexit" >> "$pyfile"
+	echo "import readline" >> "$pyfile"
+	echo "import rlcompleter" >> "$pyfile"
+	echo "import os" >> "$pyfile"
+	echo "readline.parse_and_bind('tab: complete')'" >> "$pyfile"
+	echo "histfile = os.path.join(os.environ['HOME'], '.cache/python/python_history')" >> "$pyfile"
+	echo "try:"
+	echo "	readline.read_history_file(histfile)" >> "$pyfile"
+	echo "except IOError:" >> "$pyfile"
+	echo "	pass" >> "$pyfile"
+	echo "del os, histfile, readline, rlcompleter" >> "$pyfile"
+}
+
+if [ "$(whoami)" = "root" ];
+then
+	# setup password
+	echo "Setting up root password..."
+	passwd
+
+	# install packages
+	pkg_update
+	cmd_install "sudo"
+	cmd_install "git"
+	cmd_install "vim"
+	cmd_install "zsh"
+	cmd_install "htop"
+	cmd_install "wget"
+	cmd_install "man"
+
+	# remove crap
+	if [ -d "/etc/cloud" ];
+	then
+		pkg_remove "cloud-init" || true
+		rm -rf /etc/cloud || true
+	fi
+
+	setup_python
+	mkdir -p "$HOME/.config"
+	mkdir -p "$HOME/.cache/python"
+	mkdir -p "$HOME/.cache/vim"
+	mkdir -p "$HOME/.cache/zsh"
+
+	# setup home
+	cd "$HOME"
+	echo "User account name: "
+	read username
+	if [ -n "$username" ];
+	then
+		useradd "$username"
+		mkdir -p "/home/$username"
+		chown "$username" "/home/$username"
+
+		# setup user password
+		echo "Setting up user password..."
+		passwd
+		# run this script as the new user
+		cp "$0" "/$0" || true
+		chmod 777 "/$0" || true
+		sudo -u "$username" sh "/$0"
+		rm "/$0" || true
+		if [ -x $(grep -i sudo /etc/group) ];
+		then
+			usermod -aG "$username" sudo
+		else
+			usermod -aG "$username" wheel
+		fi
+
+		# if the user exists, use their dotfiles
+		ln -s "/home/$username/.zshrc" "$HOME/."
+		ln -s "/home/$username/.gitconfig" "$HOME/."
+		ln -s "/home/$username/.scripts" "$HOME/."
+		ln -s "/home/$username/.config/git" "$HOME/.config/."
+		ln -s "/home/$username/.config/htop" "$HOME/.config/."
+		ln -s "/home/$username/.config/lynx" "$HOME/.config/."
+		ln -s "/home/$username/.config/tmux" "$HOME/.config/."
+		ln -s "/home/$username/.config/vim" "$HOME/.config/."
+		ln -s "/home/$username/.config/zsh" "$HOME/.config/."
+
+		# set user shell
+		chsh -s `which zsh` "$username"
+	fi
+
+	# set shell
+	chsh -s `which zsh`
+	zsh
+else
+	# setup dotfiles
+	cd "$HOME"
+	git clone "https://git.rayment.fr/dotfiles" || \
+	git clone "https://github.com/rayment/dotfiles"
+	mv dotfiles/.git "$HOME/.dot"
+	mv dotfiles/* "$HOME" || true
+	mv dotfiles/.[!.]* "$HOME" || true
+	rmdir dotfiles
+
+	# setup home folders
+	mkdir -p "$HOME/.config"
+	mkdir -p "$HOME/.cache/python"
+	mkdir -p "$HOME/.cache/vim"
+	mkdir -p "$HOME/.cache/zsh"
+
+	# setup git and zsh vars
+	mkdir -p "$HOME/.config/zsh"
+	echo "Full name: "
+	read fullname
+	echo "Email address: "
+	read email
+	if [ -n "$fullname" ];
+	then
+		git config --global user.name "$fullname"
+		if [ -n "$email" ];
+		then
+			echo "export AUTHOR=\"$username <$email>\"" >> \
+				"$HOME/.config/zsh/zshprotect"
+		else
+			echo "export AUTHOR=\"$username\"" >> \
+				"$HOME/.config/zsh/zshprotect"
+		fi
+	fi
+	if [ -n "$email" ];
+	then
+		echo "export EMAIL=\"$email\"" >> "$HOME/.config/zsh/zshprotect"
+	fi
+fi
+
