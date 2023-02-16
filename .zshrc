@@ -15,6 +15,12 @@ if [[ $- != *i* ]] ; then
 	return
 fi
 
+if [ ! -z "$TMUX" ];
+then
+	# close tmux session on st close
+	tmux set-option destroy-unattached
+fi
+
 # umask protection
 umask 027
 
@@ -33,7 +39,7 @@ export MANPAGER=manpager
 # hist file
 HISTSIZE=512
 HISTFILESIZE=1024
-export HISTFILE=~/.cache/zsh/zsh_history
+export HISTFILE=$XDG_CACHE_HOME/zsh/zsh_history
 
 # timeout
 TMOUT=300
@@ -47,14 +53,15 @@ then
 fi
 
 # initialisation variables
-export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$HOME/.config/java" \
+export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME/java" \
                      _JAVA_AWT_WM_NONREPARENTING=1
+export NUGET_PACKAGES="$XDG_CACHE_HOME"/NuGetPackages
 export LESSHISTFILE=-
 export MAIL="$HOME/Mail"
 export PYTHONSTARTUP="/usr/share/python/python_startup.py"
 export STARDICT_DATA_DIR="/usr/share"
-export VIMINIT="source ~/.config/vim/vimrc"
-export WINEPREFIX="$HOME/.local/share/wine"
+export VIMINIT="source $XDG_CONFIG_HOME/vim/vimrc"
+export WINEPREFIX="$XDG_DATA_HOME/wine"
 #if [ "$(whoami)" = "root" ];
 #then
 #	unset XAUTHORITY
@@ -105,13 +112,14 @@ alias iirc="weechat"                  # iirc alias
 alias ls="ls --color=auto -G"         # ungrouped ls
 alias la="ls -hlFH"                   # technical ls, no hidden files
 alias ll="ls -ahlFH"                  # technical ls
-alias lynx="lynx -display_charset=utf8 -nopause -cfg=~/.config/lynx/lynxrc"
+alias lynx="lynx -display_charset=utf8 -nopause -cfg=$XDG_CONFIG_HOME/lynx/lynxrc"
                                       # lynx with config
 alias mutt="neomutt"                  # shortened version of neomutt
+alias neofetch="screenfetch"          # screenfetch redirect
 alias python="python3 -B"             # disable __pycache__
 alias python3="python3 -B"            # disable __pycache__
 alias rclear="clear && read"          # clear and wait for input
-alias tmux="tmux -f ~/.config/tmux/tmux.conf"
+alias tmux="tmux -f $XDG_CONFIG_HOME/tmux/tmux.conf"
                                       # tmux with config
 alias vi="vim"                        # vi redirect
 alias watch="watch --color"           # coloured watch
@@ -125,12 +133,12 @@ alias procs="ps haux Ou | cut '-d ' -f1 | uniq -c"
                                       # num. of running procs.
 alias search="grep -irnw . -e"        # search for keyword in files recursively
 alias shutdown="shutdown -h now"      # easy shutdown
-alias wget="wget --hsts-file ~/.cache/wget/hsts"
+alias wget="wget --hsts-file $XDG_CACHE_HOME/wget/hsts"
                                       # hide away the wget hosts file
 
 # autocompletions
 autoload -U compinit
-compinit -d ~/.cache/zsh/zcompdump
+compinit -d $XDG_CACHE_HOME/zsh/zcompdump
 
 # completion style
 zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
